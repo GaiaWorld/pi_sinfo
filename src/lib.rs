@@ -16,15 +16,15 @@
 //! 当其被反序列化时，可以根据元信息中描述的字段类型，来反序列化
 //!
 
-extern crate atom;
-extern crate bon;
+extern crate pi_atom;
+extern crate pi_bon;
 
 use std::vec::Vec;
 use std::collections::HashMap;
 use std::sync::Arc;
 
-use atom::Atom;
-use bon::{WriteBuffer, ReadBuffer, Encode, Decode, ReadBonErr};
+use pi_atom::Atom;
+use pi_bon::{WriteBuffer, ReadBuffer, Encode, Decode, ReadBonErr};
 
 /**
 * 自定义对象序列化元信息
