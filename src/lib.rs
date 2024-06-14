@@ -29,12 +29,37 @@ use pi_bon::{WriteBuffer, ReadBuffer, Encode, Decode, ReadBonErr};
 /**
 * 自定义对象序列化元信息
 */
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct StructInfo {
 	pub name: Atom,
 	pub name_hash: u32,
 	pub notes: Option<HashMap<Atom, Atom>>,
 	pub fields: Vec<FieldInfo>,
+	pub is_ignore_name: bool,
+	pub is_ignore_name_hash: bool,
+	pub is_ignore_notes: bool,
+}
+
+impl PartialEq for StructInfo {
+	fn eq(&self, other: &Self) -> bool {
+		let is_ignore_name = self.is_ignore_name_hash || other.is_ignore_name_hash;
+		let is_ignore_name_hash = self.is_ignore_name_hash || other.is_ignore_name_hash;
+		let is_ignore_notes = self.is_ignore_notes || other.is_ignore_notes;
+
+		let mut result = true;
+		if !is_ignore_name {
+			result &= self.name.eq(&other.name);
+		}
+		if !is_ignore_name_hash {
+			result &= self.name_hash.eq(&other.name_hash);
+		}
+		if !is_ignore_notes {
+			result &= self.notes.eq(&other.notes);
+		}
+		result &= self.fields.eq(&other.fields);
+
+		result
+	}
 }
 
 impl StructInfo {
@@ -50,6 +75,9 @@ impl StructInfo {
 			name_hash: name_hash,
 			notes: None,
 			fields: Vec::new(),
+			is_ignore_name: false,
+			is_ignore_name_hash: false,
+			is_ignore_notes: false,
 		}
 	}
 	pub fn get_note(&self, key: &Atom) -> Option<&Atom> {
@@ -76,6 +104,9 @@ impl Decode for StructInfo{
 			name_hash: u32::decode(bb)?,
 			notes: Option::decode(bb)?,
 			fields: Vec::decode(bb)?,
+			is_ignore_name: false,
+			is_ignore_name_hash: false,
+			is_ignore_notes: false,
 		})
 	}
 }
@@ -176,11 +207,35 @@ impl Decode for EnumType{
 	}
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug)]
 pub struct FieldInfo {
 	pub name: Atom,
 	pub ftype: EnumType,
 	pub notes: Option<HashMap<Atom, Atom>>,
+	pub is_ignore_name: bool,
+	pub is_ignore_ftype: bool,
+	pub is_ignore_notes: bool,
+}
+
+impl PartialEq for FieldInfo {
+	fn eq(&self, other: &Self) -> bool {
+		let is_ignore_name = self.is_ignore_name || other.is_ignore_name;
+		let is_ignore_ftype = self.is_ignore_ftype || other.is_ignore_ftype;
+		let is_ignore_notes = self.is_ignore_notes || other.is_ignore_notes;
+
+		let mut result = true;
+		if !is_ignore_name {
+			result &= self.name.eq(&other.name);
+		}
+		if !is_ignore_ftype {
+			result &= self.ftype.eq(&other.ftype);
+		}
+		if !is_ignore_notes {
+			result &= self.notes.eq(&other.notes);
+		}
+
+		result
+	}
 }
 
 
@@ -207,6 +262,9 @@ impl Decode for FieldInfo{
 			name: n,
 			ftype: EnumType::decode(bb)?,
 			notes: Option::decode(bb)?,
+			is_ignore_name: false,
+			is_ignore_ftype: false,
+			is_ignore_notes: false,
 		})
 	}
 }
