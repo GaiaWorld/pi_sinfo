@@ -1,6 +1,6 @@
 [package]
 name = "pi_sinfo"
-version = "0.5.0"
+version = "0.5.1"
 authors = ["suncy <530739162@qq.com>"]
 edition = "2021"
 description = "It is used to describe the 'structure', that is, the meta information of the structure"
@@ -10,4 +10,4 @@ keywords = ["pi", "pi_sinfo"]
 
 [dependencies]
 pi_atom = "0.6"
-pi_bon = "0.2"
+pi_bon = "0.3"
